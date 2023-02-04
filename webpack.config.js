@@ -30,11 +30,17 @@ const config = {
         rules: [
             {
                 test: /\.(ts|tsx)$/i,
-                loader: 'ts-loader',
                 exclude: ['/node_modules/'],
-                options:{
-                    "appendTsSuffixTo":[/\.vue$/]
-                }
+                use: [
+                    'babel-loader',
+                    {
+                        loader: 'ts-loader',
+                        options: {
+                            appendTsSuffixTo: [/\.vue$/],
+                            appendTsxSuffixTo: [/\.vue$/]
+                        }
+                    }
+                ]
             },
             {
                 test: /\.css$/i,
