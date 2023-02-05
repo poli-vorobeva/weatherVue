@@ -10,7 +10,6 @@
 	export default {
 		props: ['text', 'title', 'imgUrl'],
 		setup(props) {
-			console.log(props.title, props.text, props.imgUrl)
 			return {
 				imgUrl: props.imgUrl, title: props.title, text: props.text
 			}

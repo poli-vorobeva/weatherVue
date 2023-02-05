@@ -13,8 +13,8 @@
 </template>
 
 <script>
-	import {metrToKm} from "./functions";
-	import WeatherCell from "./UI/WeatherCell.vue";
+	import {metrToKm} from "../functions";
+	import WeatherCell from "../UI/WeatherCell.vue";
 
 	export default {
 		components: {WeatherCell},

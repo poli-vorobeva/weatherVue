@@ -4,12 +4,10 @@
 </template>
 
 <script>
-    import MainView from "./MainView.vue";
-    import SettingsView from "./SettingsView.vue";
-
+    import MainView from "./mainView/MainView.vue";
+    import SettingsView from "./settingsView/SettingsView.vue";
 	export default {
 		components: {MainView, SettingsView}
-
 	}
 </script>
 

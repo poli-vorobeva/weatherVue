@@ -6,6 +6,7 @@ import {createStore, createLogger} from 'vuex'
 export default createStore<IState>({
 	state() {
 		return {
+			citiesCount:35,
 			cities: ['London', 'Moscow'],
 			//todo check if incorrect City
 			citiesData: [],
@@ -27,7 +28,12 @@ export default createStore<IState>({
 					imgSrc: `http://openweathermap.org/img/wn/${r.weather[0].icon}@2x.png`
 				}
 			})
-			console.log(state.citiesData,'--%%^%%^')
+		},
+		addCity(state:IState,city:string){
+			state.cities.push(city)
+			const oldLocalData = localStorage.getItem('weatherCities')
+			localStorage.setItem('weatherCities',JSON.stringify(JSON.parse(oldLocalData).push(city)))
+
 		}
 	},
 	actions: {
@@ -36,8 +42,8 @@ export default createStore<IState>({
 			const geo = fetch(`https://api.ipgeolocation.io/ipgeo?apiKey=${apiKey}&lang=en`)
 			geo.then(async g => {
 				const geoRes = await g.json()
-				localStorage.setItem('weatherCities',JSON.stringify([geoRes.city]))
-				context.state.cities=[geoRes.city]
+				localStorage.setItem('weatherCities', JSON.stringify([geoRes.city]))
+				context.state.cities = [geoRes.city]
 			})
 		},
 		getCitiesData(context) {
@@ -50,29 +56,30 @@ export default createStore<IState>({
 			})
 				.then(r => context.commit('createCityData', r))
 		},
-		getFromLocalStorage(context){
-				context.state.cities=JSON.parse(localStorage.getItem('weatherCities'))
-			},
+		getFromLocalStorage(context) {
+			context.state.cities = JSON.parse(localStorage.getItem('weatherCities'))
+		},
 		getData(context) {
 			//заходим, смотрим локал
-			if( localStorage.getItem('weatherCities')){
-				console.log("HAS")
+			if (localStorage.getItem('weatherCities')) {
 				const l = context.dispatch('getFromLocalStorage')
-				l.then(()=>{
+				l.then(() => {
 					const t = context.dispatch('getCitiesData')
-					t.then(()=>console.log(t,'T'))
+					//t.then(() => console.log(t, 'T'))
 				})
-			}else{
-				const geoCity= context.dispatch('getGeoLocation')
-				console.log(geoCity,'geo')
+			} else {
+				const geoCity = context.dispatch('getGeoLocation')
 				const t = context.dispatch('getCitiesData')
 
-				console.log(t,'t')
 			}
 		}
 	},
 	getters: {
+		getCount(state:IState){
+			return state.citiesCount
+		},
 		getCities(state: IState) {
+			console.log(state.citiesData, 'state.citiesData')
 			return state.citiesData
 		}
 	}

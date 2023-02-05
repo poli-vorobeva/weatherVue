@@ -85,6 +85,9 @@ const config = {
     },
     resolve: {
         extensions: ['.tsx', '.ts', '.jsx', '.js', '...'],
+        alias: {
+            'vue': path.join(__dirname, 'node_modules/vue/dist/vue.esm-bundler.js')
+        }
     },
 };
 
