@@ -6,7 +6,10 @@
     "target": "es5",
     "allowJs": true,
     "moduleResolution": "node",
-    "lib": ["es2017"]
+    "lib": [
+      "es2017",
+      "dom"
+    ]
   },
   "files": ["src/index.ts","module.d.ts"]
 }

@@ -4,6 +4,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
+const CopyPlugin= require('copy-webpack-plugin')
 const isProduction = process.env.NODE_ENV == 'production';
 
 
@@ -24,7 +25,12 @@ const config = {
         new HtmlWebpackPlugin({
             template: 'index.html',
         }),
-        new VueLoaderPlugin()
+        new VueLoaderPlugin(),
+        new CopyPlugin({
+                           patterns: [
+                               {from: "./src/assets", to: "./public/assets"},
+                           ],
+                       }),
     ],
     module: {
         rules: [
@@ -44,16 +50,37 @@ const config = {
             },
             {
                 test: /\.css$/i,
-                use: [stylesHandler,'css-loader'],
+                use: ['vue-style-loader',
+                    'css-loader',],
             },
             {
-                test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
-                type: 'asset',
+                test: /\.(png|jpe?g|gif|svg)$/,
+                use: [
+                    {
+                        loader: 'url-loader',
+                        options: {
+                            limit: false,
+                        },
+                    }
+                ]
             },
             {
                 test: /\.vue$/,
                 use: 'vue-loader'
-            }
+            },
+            {
+                test: /\.sass$/i,
+                use: ['vue-style-loader','css-loader',{
+                    loader:'sass-loader',
+                    options: {
+                        indentedSyntax:true,
+                        sassOptions:{
+                            indentedSyntax:true
+                        },
+                        additionalData:`@import "./src/main.scss"`
+                    }
+                }],
+            },
         ],
     },
     resolve: {
