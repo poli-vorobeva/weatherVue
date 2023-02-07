@@ -1,4 +1,5 @@
 import {IWeatherResponse} from "./dto/dto.api";
+import {tCityCardProps} from "./dto/dto.main";
 
 export const derectSectors: string[] = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW", "N"];
 
@@ -26,8 +27,36 @@ export const cityData = (r: IWeatherResponse) => {
 export const cityFetch = (city: string) => {
 	return new Promise((res, rej) => {
 		const f = fetch(
-			`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=a1d7b55bf627b6db7643916254c70535&units=metric`)
+			`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=a1d7b55bf627b6db7643916254c70535&units=metric`,{headers: {
+					'Content-Type':"application/json"
+				}})
 		f.then(r => r.json())
 			.then(d => res(d))
 	})
+}
+export const fetchData=async (data:'geo'|"weather",city:string):Promise<IWeatherResponse>=>{
+	// if(data==='geo') return await fetchGeo(city)
+	// else return await fetchWeather(city)
+	try{
+		const f =fetch('https://weatherserver.onrender.com/',{
+			method: 'post',
+			body: JSON.stringify({data,city}),
+		})
+		return f.then(d=> d.text()).then(g=> {
+			const data = JSON.parse(g)
+			return data
+		})
+	}catch (e) {
+return null
+	}
+
+//	return
+}
+export const fetchWeather=(city:string)=>{
+	return fetch(
+		`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=a1d7b55bf627b6db7643916254c70535&units=metric`)
+}
+export const fetchGeo=(city:string)=>{
+	const apiKey = '09cc073d99f843bd93b5e025c1adf603'
+	return fetch(`https://api.ipgeolocation.io/ipgeo?apiKey=${apiKey}&lang=en`)
 }

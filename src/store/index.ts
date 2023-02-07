@@ -1,6 +1,6 @@
 import {IState} from "../components/dto/dto.state";
 import {IWeatherResponse} from "../components/dto/dto.api";
-import {cityData, cityFetch, derectSectors} from "../components/functions";
+import {cityData, cityFetch, derectSectors, fetchData} from "../components/functions";
 import {createStore, createLogger} from 'vuex'
 import {dragStore} from "./dragStore";
 import {tCityCardProps} from "../components/dto/dto.main";
@@ -111,7 +111,9 @@ export default createStore<IState>({
 		addCity(context, props) {
 			try {
 				const data = fetch(
-					`https://api.openweathermap.org/data/2.5/weather?q=${props}&appid=a1d7b55bf627b6db7643916254c70535&units=metric`)
+					`https://api.openweathermap.org/data/2.5/weather?q=${props}&appid=a1d7b55bf627b6db7643916254c70535&units=metric`,{headers: {
+							'Content-Type':"application/json"
+						}})
 				data.then(async d => {
 					const res = await d.json()
 					context.commit('onAddCity', res)
@@ -121,7 +123,11 @@ export default createStore<IState>({
 		},
 		getGeoLocation(context) {
 			const apiKey = '09cc073d99f843bd93b5e025c1adf603'
-			const geo = fetch(`https://api.ipgeolocation.io/ipgeo?apiKey=${apiKey}&lang=en`)
+			const geo = fetch(`https://api.ipgeolocation.io/ipgeo?apiKey=${apiKey}&lang=en`,{
+				headers: {
+					'Content-Type':"application/json"
+				}
+			})
 			geo.then(async g => {
 				const geoRes = await g.json()
 				localStorage.setItem('weatherCities', JSON.stringify([geoRes.city]))
@@ -136,21 +142,23 @@ export default createStore<IState>({
 			// 	console.log(el)
 			// })
 
-			const allCitiesData = Promise.all(context.state.cities.map((city: string) => {
+			const allCitiesData = Promise.all(context.state.cities.map(async (city: string) => {
 				try {
-					return fetch(
-						`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=a1d7b55bf627b6db7643916254c70535&units=metric`)
-
+					const dd = fetchData('weather',city)
+					return dd.then(d=> {
+						return  d
+					})
+					// dd.then(r=>{
+					// 	console.log("dd.then",r)
+					// })
 				} catch (e) {
 					return null
 				}
 
 			}))
 			allCitiesData.then(d => {
-				console.log(d, '$$%$')
-				return Promise.all(d.map(c => c.json()))
+				context.commit('createCitiesData', d)
 			})
-				.then(r => context.commit('createCitiesData', r))
 		},
 		getFromLocalStorage(context) {
 			context.state.cities = JSON.parse(localStorage.getItem('weatherCities'))

@@ -3,7 +3,6 @@ import App from './AppR.vue'
 import store from './store'
 
 function weather(parent: HTMLElement) {
-	console.log('WE')
 	const app = createApp(App)
 	app.use(store);
 	app.mount(parent);
