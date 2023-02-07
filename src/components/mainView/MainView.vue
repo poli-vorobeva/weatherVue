@@ -1,18 +1,19 @@
 <template>
-        <city-card :city="city" v-for="city of cities"/>
+        <city-card @click="cl" :city="city" v-for="city of cities"/>
 </template>
 
 <script>
 	import {useStore} from "vuex";
 	import CityCard from "./CityCard.vue";
-	import {ref,reactive,computed} from "vue";
+	import {computed} from "vue";
 
 	export default {
 		components: {CityCard},
-		setup() {
+		setup(_,context) {
 			const store = useStore()
 			const cities = computed(()=>store.getters.getCities)
-			return {cities}
+                const cl=(e)=>context.emit('cll')
+			return {cities,cl}
 		}
 	}
 </script>

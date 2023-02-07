@@ -1,8 +1,5 @@
 <template>
     <weather-widget/>
-    <h3>{{count}}, tratatat</h3>
-    <button>EMIT</button>
-    <div>App{{$store.state.count}}</div>
 </template>
 <script lang="ts">
 	import {useStore} from "vuex"
@@ -14,9 +11,6 @@
 		setup() {
 			const store = useStore()
 			store.dispatch('getData')
-			//const emit = defineEmits<{(e: 'something',num:number): void}>()
-
-          //something emit()
 			const count = computed(() => store.getters.getCount)
 			return {count}
 		},

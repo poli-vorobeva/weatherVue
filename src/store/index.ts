@@ -2,12 +2,64 @@ import {IState} from "../components/dto/dto.state";
 import {IWeatherResponse} from "../components/dto/dto.api";
 import {derectSectors} from "../components/functions";
 import {createStore, createLogger} from 'vuex'
+import {dragStore} from "./dragStore";
 
+const fake = [
+	{
+		"clouds": 94,
+		"feelsLike": -1.54,
+		"description": "overcast clouds",
+		"humid": 77,
+		"visibility": 10000,
+		"pressure": 1017,
+		"windDirection": "NNE",
+		"name": "Yalta",
+		"country": "UA",
+		"tepm": 3.28,
+		"wind": 6.61,
+		"imgSrc": "http://openweathermap.org/img/wn/04d@2x.png"
+	},
+	{
+		"clouds": 904,
+		"feelsLike": -1.54,
+		"description": "overcast clouds",
+		"humid": 77,
+		"visibility": 10000,
+		"pressure": 1017,
+		"windDirection": "NNE",
+		"name": "SomeCity",
+		"country": "UA",
+		"tepm": 3.28,
+		"wind": 6.61,
+		"imgSrc": "http://openweathermap.org/img/wn/04d@2x.png"
+	},
+	{
+		"clouds": 90,
+		"feelsLike": -7.67,
+		"description": "overcast clouds",
+		"humid": 99,
+		"visibility": 4302,
+		"pressure": 1032,
+		"windDirection": "NNW",
+		"name": "Moscow",
+		"country": "RU",
+		"tepm": -5.43,
+		"wind": 1.36,
+		"imgSrc": "http://openweathermap.org/img/wn/04d@2x.png"
+	}
+]
+
+const plugins = []
+if (process.env.NODE_ENV === 'development') {
+	plugins.push(createLogger())
+}
 export default createStore<IState>({
+	modules: {drag: dragStore},
+	plugins,
 	state() {
 		return {
-			citiesCount:35,
-			cities: ['London', 'Moscow'],
+			citiesCount: 35,
+			cities: [],
 			//todo check if incorrect City
 			citiesData: [],
 		}
@@ -28,12 +80,25 @@ export default createStore<IState>({
 					imgSrc: `http://openweathermap.org/img/wn/${r.weather[0].icon}@2x.png`
 				}
 			})
+			//console.log(state.citiesData)
 		},
-		addCity(state:IState,city:string){
+		addCity(state: IState, city: string) {
 			state.cities.push(city)
 			const oldLocalData = localStorage.getItem('weatherCities')
-			localStorage.setItem('weatherCities',JSON.stringify(JSON.parse(oldLocalData).push(city)))
+			localStorage.setItem('weatherCities', JSON.stringify(JSON.parse(oldLocalData).push(city)))
 
+		},
+		reOrderCities(state: IState, payload: { from: number, to: number }) {
+			const copy2 = JSON.parse(JSON.stringify(state.citiesData))
+			const tF = JSON.parse(JSON.stringify(copy2[payload.from]));
+			const tT = JSON.parse(JSON.stringify(copy2[payload.to]));
+			copy2.splice(payload.to, 1, tF)
+			copy2.splice(payload.from, 1, tT)
+			state.citiesData = copy2
+			const c = state.citiesData.map(c => c.name)
+			state.cities = c
+			localStorage.setItem('weatherCities', JSON.stringify(c))
+			// state.citiesData=[]
 		}
 	},
 	actions: {
@@ -60,26 +125,24 @@ export default createStore<IState>({
 			context.state.cities = JSON.parse(localStorage.getItem('weatherCities'))
 		},
 		getData(context) {
-			//заходим, смотрим локал
-			if (localStorage.getItem('weatherCities')) {
-				const l = context.dispatch('getFromLocalStorage')
-				l.then(() => {
-					const t = context.dispatch('getCitiesData')
-					//t.then(() => console.log(t, 'T'))
-				})
-			} else {
-				const geoCity = context.dispatch('getGeoLocation')
-				const t = context.dispatch('getCitiesData')
-
-			}
+			console.log("GETdata")
+			context.state.citiesData = fake
+			// if (localStorage.getItem('weatherCities').length > 5) {
+			// 	const l = context.dispatch('getFromLocalStorage')
+			// 	l.then(() => {
+			// 		const t = context.dispatch('getCitiesData')
+			// 	})
+			// } else {
+			// 	const geoCity = context.dispatch('getGeoLocation')
+			// 	geoCity.then((res) => context.dispatch('getCitiesData'))
+			// }
 		}
 	},
 	getters: {
-		getCount(state:IState){
+		getCount(state: IState) {
 			return state.citiesCount
 		},
 		getCities(state: IState) {
-			console.log(state.citiesData, 'state.citiesData')
 			return state.citiesData
 		}
 	}
