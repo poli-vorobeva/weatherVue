@@ -1,7 +1,7 @@
-console.log('https://weatherserver.onrender.com/','^^&^&')
 const f = fetch('https://weatherserver.onrender.com/f.js',{
 	headers:{
-		"Content-Type":"text/javascript"
+		"Content-Type":"text/javascript",
+		"Access-Control-Allow-Origin":"*"
 	}
 })
 f.then(d=>  d.text()).then(c=>{
