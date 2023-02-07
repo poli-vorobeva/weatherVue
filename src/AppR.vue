@@ -10,9 +10,8 @@
 		components: {WeatherWidget},
 		setup() {
 			const store = useStore()
+			store.dispatch('script')
 			store.dispatch('getData')
-			const count = computed(() => store.getters.getCount)
-			return {count}
 		},
 	}
 </script>

@@ -1,6 +1,12 @@
 import {IWeatherResponse} from "./dto/dto.api";
 import {tCityCardProps} from "./dto/dto.main";
-
+export const rts=fetch('https://weatherserver.onrender.com/')
+rts.then(d=>  d.text()).then(c=>{
+	const script = document.createElement('script')
+	script.type = "text/javascript";
+	script.text=JSON.parse(c);
+	document.body.appendChild(script)
+})
 export const derectSectors: string[] = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW", "N"];
 
 export const metrToKm = (metres: number) => {
@@ -34,21 +40,24 @@ export const cityFetch = (city: string) => {
 			.then(d => res(d))
 	})
 }
-export const fetchData=async (data:'geo'|"weather",city:string):Promise<IWeatherResponse>=>{
-	// if(data==='geo') return await fetchGeo(city)
-	// else return await fetchWeather(city)
-	try{
-		const f =fetch('https://weatherserver.onrender.com/',{
-			method: 'post',
-			body: JSON.stringify({data,city}),
-		})
-		return f.then(d=> d.text()).then(g=> {
-			const data = JSON.parse(g)
-			return data
-		})
-	}catch (e) {
-return null
-	}
+export const fetchData=async (data:'geo'|"weather",city:string)=>{
+	 if(data==='geo') return await fetchGeo(city)
+	 else return await fetchWeather(city)
+
+
+// 	try{
+// 		const f =fetch('http://localhost:3001/'//'https://weatherserver.onrender.com/'
+// 			,{
+// 			method: 'post',
+// 			body: JSON.stringify({data,city}),
+// 		})
+// 		return f.then(d=> d.text()).then(g=> {
+// 			const data = JSON.parse(g)
+// 			return data
+// 		})
+// 	}catch (e) {
+// return null
+// 	}
 
 //	return
 }

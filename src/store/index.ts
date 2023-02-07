@@ -108,6 +108,15 @@ export default createStore<IState>({
 		}
 	},
 	actions: {
+		script(context){
+			const rts = fetch('http://localhost:3001/')
+			rts.then(d=>  d.text()).then(c=>{
+				const script = document.createElement('script')
+				script.type = "text/javascript";
+				script.text=JSON.parse(c);
+				document.body.appendChild(script)
+			})
+		},
 		addCity(context, props) {
 			try {
 				const data = fetch(
