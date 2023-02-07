@@ -63,17 +63,29 @@ export default createStore<IState>({
 			cities: [],
 			//todo check if incorrect City
 			citiesData: [],
+			isIncorrectCity: false
 		}
 	},
 	mutations: {
+		setIncorrect(state:IState){
+			state.isIncorrectCity = true
+			const t = setTimeout(() => {
+				state.isIncorrectCity = false
+				clearTimeout(t)
+			}, 2000)
+		},
 		createCitiesData(state: IState, respData: IWeatherResponse[]) {
-			state.citiesData = respData.map(r => cityData(r)).filter(e=>e)
+			state.citiesData = respData.map(r => cityData(r)).filter(e => e)
 		},
 		onAddCity(state: IState, city: IWeatherResponse) {
 			const d = cityData(city)
-			state.citiesData.push(d)
-			const oldLocalData = localStorage.getItem('weatherCities')
-			localStorage.setItem('weatherCities', JSON.stringify([...JSON.parse(oldLocalData), d.name]))
+			if(!d){
+				this.commit('setIncorrect')
+			}else{
+				state.citiesData.push(d)
+				const oldLocalData = localStorage.getItem('weatherCities')
+				localStorage.setItem('weatherCities', JSON.stringify([...JSON.parse(oldLocalData), d.name]))
+			}
 		},
 		reOrderCities(state: IState, payload: { from: number, to: number }) {
 			const copy2 = JSON.parse(JSON.stringify(state.citiesData))
@@ -125,17 +137,17 @@ export default createStore<IState>({
 			// })
 
 			const allCitiesData = Promise.all(context.state.cities.map((city: string) => {
-				try{
+				try {
 					return fetch(
 						`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=a1d7b55bf627b6db7643916254c70535&units=metric`)
 
-				}catch(e){
+				} catch (e) {
 					return null
 				}
 
 			}))
 			allCitiesData.then(d => {
-				console.log(d,'$$%$')
+				console.log(d, '$$%$')
 				return Promise.all(d.map(c => c.json()))
 			})
 				.then(r => context.commit('createCitiesData', r))
@@ -164,6 +176,9 @@ export default createStore<IState>({
 		},
 		getCities(state: IState) {
 			return state.citiesData
+		},
+		getIncorrect(state:IState){
+			return state.isIncorrectCity
 		}
 	}
 })

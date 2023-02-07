@@ -3,5 +3,6 @@ import {tCityCardProps} from "./dto.main";
 export interface IState{
 	citiesCount:number,
 	cities: string[],
-	citiesData: tCityCardProps[]
+	citiesData: tCityCardProps[],
+	isIncorrectCity:boolean
 }

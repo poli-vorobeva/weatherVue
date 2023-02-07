@@ -31,10 +31,7 @@
 			const onDrop = (e) => {
 				store.dispatch('drag/onDrop', e.dataTransfer.getData('Text'))
 			}
-			const deleteItem=()=>{
-				console.log('DELETEitem')
-				store.commit('deleteCity',indx)
-            }
+			const deleteItem=()=>store.commit('deleteCity',indx)
 			return {
 				city:toR.name.value, country:toR.country.value, dragEnter, strtDrg, onDrop,deleteItem
 			}
