@@ -1,8 +1,9 @@
 import {IState} from "../components/dto/dto.state";
 import {IWeatherResponse} from "../components/dto/dto.api";
-import {derectSectors} from "../components/functions";
+import {cityData, cityFetch, derectSectors} from "../components/functions";
 import {createStore, createLogger} from 'vuex'
 import {dragStore} from "./dragStore";
+import {tCityCardProps} from "../components/dto/dto.main";
 
 const fake = [
 	{
@@ -65,28 +66,14 @@ export default createStore<IState>({
 		}
 	},
 	mutations: {
-		createCityData(state: IState, respData: IWeatherResponse[]) {
-			state.citiesData = respData.map(r => {
-				return {
-					clouds: r.clouds.all,
-					feelsLike: r.main.feels_like,
-					description: r.weather[0].description,
-					humid: r.main.humidity,
-					visibility: r.visibility,
-					pressure: r.main.pressure,
-					windDirection: derectSectors[Math.floor(r.wind.deg / 22.5)],
-					name: r.name, country: r.sys.country,
-					tepm: r.main.temp, wind: r.wind.speed,
-					imgSrc: `http://openweathermap.org/img/wn/${r.weather[0].icon}@2x.png`
-				}
-			})
-			//console.log(state.citiesData)
+		createCitiesData(state: IState, respData: IWeatherResponse[]) {
+			state.citiesData = respData.map(r => cityData(r)).filter(e=>e)
 		},
-		addCity(state: IState, city: string) {
-			state.cities.push(city)
+		onAddCity(state: IState, city: IWeatherResponse) {
+			const d = cityData(city)
+			state.citiesData.push(d)
 			const oldLocalData = localStorage.getItem('weatherCities')
-			localStorage.setItem('weatherCities', JSON.stringify(JSON.parse(oldLocalData).push(city)))
-
+			localStorage.setItem('weatherCities', JSON.stringify([...JSON.parse(oldLocalData), d.name]))
 		},
 		reOrderCities(state: IState, payload: { from: number, to: number }) {
 			const copy2 = JSON.parse(JSON.stringify(state.citiesData))
@@ -96,12 +83,30 @@ export default createStore<IState>({
 			copy2.splice(payload.from, 1, tT)
 			state.citiesData = copy2
 			const c = state.citiesData.map(c => c.name)
-			state.cities = c
+			//state.cities = c
 			localStorage.setItem('weatherCities', JSON.stringify(c))
-			// state.citiesData=[]
+		},
+		deleteCity(state: IState, id: number) {
+			const arrData = JSON.parse(JSON.stringify(state.citiesData))
+			//	const ind= arrData.findIndex((e:tCityCardProps)=>e.name===city)
+			arrData.splice(id, 1)
+			state.citiesData = arrData
+			const c = state.citiesData.map((c: tCityCardProps) => c.name)
+			localStorage.setItem('weatherCities', JSON.stringify(c))
 		}
 	},
 	actions: {
+		addCity(context, props) {
+			try {
+				const data = fetch(
+					`https://api.openweathermap.org/data/2.5/weather?q=${props}&appid=a1d7b55bf627b6db7643916254c70535&units=metric`)
+				data.then(async d => {
+					const res = await d.json()
+					context.commit('onAddCity', res)
+				})
+			} catch (e) {
+			}
+		},
 		getGeoLocation(context) {
 			const apiKey = '09cc073d99f843bd93b5e025c1adf603'
 			const geo = fetch(`https://api.ipgeolocation.io/ipgeo?apiKey=${apiKey}&lang=en`)
@@ -111,32 +116,47 @@ export default createStore<IState>({
 				context.state.cities = [geoRes.city]
 			})
 		},
+
 		getCitiesData(context) {
+			// const responseData=context.state.cities.map(async city => await cityFetch(city))
+			// console.log(responseData,'RESP')
+			// responseData.map(el=>{
+			// 	console.log(el)
+			// })
+
 			const allCitiesData = Promise.all(context.state.cities.map((city: string) => {
-				return fetch(
-					`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=a1d7b55bf627b6db7643916254c70535&units=metric`)
+				try{
+					return fetch(
+						`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=a1d7b55bf627b6db7643916254c70535&units=metric`)
+
+				}catch(e){
+					return null
+				}
+
 			}))
 			allCitiesData.then(d => {
+				console.log(d,'$$%$')
 				return Promise.all(d.map(c => c.json()))
 			})
-				.then(r => context.commit('createCityData', r))
+				.then(r => context.commit('createCitiesData', r))
 		},
 		getFromLocalStorage(context) {
 			context.state.cities = JSON.parse(localStorage.getItem('weatherCities'))
 		},
 		getData(context) {
 			console.log("GETdata")
-			context.state.citiesData = fake
-			// if (localStorage.getItem('weatherCities').length > 5) {
-			// 	const l = context.dispatch('getFromLocalStorage')
-			// 	l.then(() => {
-			// 		const t = context.dispatch('getCitiesData')
-			// 	})
-			// } else {
-			// 	const geoCity = context.dispatch('getGeoLocation')
-			// 	geoCity.then((res) => context.dispatch('getCitiesData'))
-			// }
-		}
+			//todo check correct city
+			//	context.state.citiesData = fake
+			if (localStorage.getItem('weatherCities').length > 5) {
+				const l = context.dispatch('getFromLocalStorage')
+				l.then(() => {
+					const t = context.dispatch('getCitiesData')
+				})
+			} else {
+				const geoCity = context.dispatch('getGeoLocation')
+				geoCity.then((res) => context.dispatch('getCitiesData'))
+			}
+		},
 	},
 	getters: {
 		getCount(state: IState) {
