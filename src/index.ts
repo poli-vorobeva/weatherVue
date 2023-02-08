@@ -18,3 +18,4 @@ class WeatherComponent extends HTMLElement {
 	}
 }
 customElements.define('weather-component', WeatherComponent)
+

@@ -76,6 +76,7 @@ export default createStore<IState>({
 		},
 		createCitiesData(state: IState, respData: IWeatherResponse[]) {
 			state.citiesData = respData.map(r => cityData(r)).filter(e => e)
+
 		},
 		onAddCity(state: IState, city: IWeatherResponse) {
 			const d = cityData(city)
@@ -108,21 +109,11 @@ export default createStore<IState>({
 		}
 	},
 	actions: {
-		script(context){
-			const rts = fetch('http://localhost:3001/')
-			rts.then(d=>  d.text()).then(c=>{
-				const script = document.createElement('script')
-				script.type = "text/javascript";
-				script.text=JSON.parse(c);
-				document.body.appendChild(script)
-			})
-		},
 		addCity(context, props) {
+			console.log(props,'props')
 			try {
 				const data = fetch(
-					`https://api.openweathermap.org/data/2.5/weather?q=${props}&appid=a1d7b55bf627b6db7643916254c70535&units=metric`,{headers: {
-							'Content-Type':"application/json"
-						}})
+					`https://api.openweathermap.org/data/2.5/weather?q=${props}&appid=a1d7b55bf627b6db7643916254c70535&units=metric`)
 				data.then(async d => {
 					const res = await d.json()
 					context.commit('onAddCity', res)
@@ -131,6 +122,7 @@ export default createStore<IState>({
 			}
 		},
 		getGeoLocation(context) {
+			console.log('5FFF')
 			const apiKey = '09cc073d99f843bd93b5e025c1adf603'
 			const geo = fetch(`https://api.ipgeolocation.io/ipgeo?apiKey=${apiKey}&lang=en`,{
 				headers: {
@@ -138,7 +130,9 @@ export default createStore<IState>({
 				}
 			})
 			geo.then(async g => {
+				console.log('6FFF')
 				const geoRes = await g.json()
+				console.log('7FFF',geoRes)
 				localStorage.setItem('weatherCities', JSON.stringify([geoRes.city]))
 				context.state.cities = [geoRes.city]
 			})
@@ -150,13 +144,14 @@ export default createStore<IState>({
 			// responseData.map(el=>{
 			// 	console.log(el)
 			// })
-
+			//console.log("getFromLocalStorage")
 			const allCitiesData = Promise.all(context.state.cities.map(async (city: string) => {
 				try {
 					const dd = fetchData('weather',city)
 					return dd.then(d=> {
+				//		console.log("allCitiesData",d)
 						return  d
-					})
+					}).then(e=>e.json()).then(s=>s)
 					// dd.then(r=>{
 					// 	console.log("dd.then",r)
 					// })
@@ -166,6 +161,8 @@ export default createStore<IState>({
 
 			}))
 			allCitiesData.then(d => {
+
+			//	console.log("dd-",d)
 				context.commit('createCitiesData', d)
 			})
 		},
@@ -173,7 +170,6 @@ export default createStore<IState>({
 			context.state.cities = JSON.parse(localStorage.getItem('weatherCities'))
 		},
 		getData(context) {
-			console.log("GETdata")
 			//todo check correct city
 			//	context.state.citiesData = fake
 			if (localStorage.getItem('weatherCities').length > 5) {
@@ -182,6 +178,7 @@ export default createStore<IState>({
 					const t = context.dispatch('getCitiesData')
 				})
 			} else {
+				//log('4FFF')
 				const geoCity = context.dispatch('getGeoLocation')
 				geoCity.then((res) => context.dispatch('getCitiesData'))
 			}

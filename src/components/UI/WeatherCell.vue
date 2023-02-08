@@ -1,5 +1,8 @@
 <template>
-    <div>
+    <div :style="{
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',paddingTop:'5px'}">
         <img :style="{width: '20px',height:'20px'}" v-if="imgUrl" :src="`${imgUrl}`" alt="">
         <span v-if="title">{{title}}</span>
         <span>{{text}}</span>

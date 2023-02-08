@@ -1,12 +1,13 @@
 import {IWeatherResponse} from "./dto/dto.api";
 import {tCityCardProps} from "./dto/dto.main";
-export const rts=fetch('https://weatherserver.onrender.com/')
-rts.then(d=>  d.text()).then(c=>{
-	const script = document.createElement('script')
-	script.type = "text/javascript";
-	script.text=JSON.parse(c);
-	document.body.appendChild(script)
-})
+// export const rts=fetch('https://weatherserver.onrender.com/')
+// rts.then(d=>  d.text()).then(c=>{
+// 	const script = document.createElement('script')
+// 	script.type = "text/javascript";
+// 	script.text=JSON.parse(c);
+// 	document.body.appendChild(script)
+// })
+
 export const derectSectors: string[] = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW", "N"];
 
 export const metrToKm = (metres: number) => {

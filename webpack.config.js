@@ -53,8 +53,7 @@ const config = {
                 use: ['vue-style-loader',
                     'css-loader',],
             },
-            {
-                test: /\.(png|jpe?g|gif|svg)$/,
+            {test: /\.(png|jpe?g|gif|svg)$/,
                 use: [
                     {
                         loader: 'url-loader',
@@ -69,17 +68,17 @@ const config = {
                 use: 'vue-loader'
             },
             {
-                test: /\.sass$/i,
-                use: ['vue-style-loader','css-loader',{
-                    loader:'sass-loader',
-                    options: {
-                        indentedSyntax:true,
-                        sassOptions:{
-                            indentedSyntax:true
-                        },
-                        additionalData:`@import "./src/main.scss"`
-                    }
-                }],
+              //  test: /\.sass$/i,
+                // use: ['vue-style-loader','css-loader',{
+                //     loader:'sass-loader',
+                //     options: {
+                //         indentedSyntax:true,
+                //         sassOptions:{
+                //             indentedSyntax:true
+                //         },
+                //         additionalData:`@import "./src/main.scss"`
+                //     }
+                // }],
             },
         ],
     },

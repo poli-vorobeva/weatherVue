@@ -10,7 +10,6 @@
 		components: {WeatherWidget},
 		setup() {
 			const store = useStore()
-			store.dispatch('script')
 			store.dispatch('getData')
 		},
 	}

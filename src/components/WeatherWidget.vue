@@ -1,5 +1,5 @@
 <template>
-<!--    <main-view/>-->
+    <main-view/>
     <settings-view/>
 </template>
 

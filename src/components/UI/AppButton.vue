@@ -1,15 +1,19 @@
 <template>
     <button>
-        <img :src="imgSrc" alt="">
+        <reorder-comp v-if="img==='reorder'"/>
+        <bin-comp v-else/>
     </button>
 </template>
 
 <script>
+    import BinComp from './binComp.vue'
+    import ReorderComp from './reorderComp.vue'
 	export default {
-		props: ['imgSrc'],
+		props: ['img'],
+      components:{BinComp,ReorderComp},
 		setup(props) {
 			return {
-				imgSrc: props.imgSrc
+				img: props.img
 			}
 		}
 	}

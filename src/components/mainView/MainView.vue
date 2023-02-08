@@ -1,5 +1,5 @@
 <template>
-        <city-card @click="cl" :city="city" v-for="city of cities"/>
+        <city-card @click="cl" :key ="cities" :city="city" v-for="city of cities"/>
 </template>
 
 <script>
@@ -13,6 +13,7 @@
 			const store = useStore()
 			const cities = computed(()=>store.getters.getCities)
                 const cl=(e)=>context.emit('cll')
+                console.log(cities.value)
 			return {cities,cl}
 		}
 	}

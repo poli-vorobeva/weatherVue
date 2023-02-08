@@ -4,9 +4,9 @@
         @dragover.prevent
         @dragenter="dragEnter"
     >
-        <app-button :imgSrc="`./public/assets/reorder.svg`"/>
+        <app-button img="reorder"/>
         {{city}}--{{country}}
-        <app-button :onclick="deleteItem" :imgSrc="`./public/assets/bin.svg`"/>
+        <app-button :onclick="deleteItem" img='bin'/>
     </li>
 </template>
 
