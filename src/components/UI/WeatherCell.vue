@@ -3,16 +3,19 @@
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',paddingTop:'5px'}">
-        <img :style="{width: '20px',height:'20px'}" v-if="imgUrl" :src="`${imgUrl}`" alt="">
+        <svg-component v-if="imgUrl" :img="imgUrl"/>
         <span v-if="title">{{title}}</span>
         <span>{{text}}</span>
     </div>
 </template>
 
 <script>
-	export default {
-		props: ['text', 'title', 'imgUrl'],
+	import SvgComponent from "./svgComponent.vue";
+		export default {
+					components: {SvgComponent},
+			props: ['text', 'title', 'imgUrl'],
 		setup(props) {
+						console.log(props,'%%')
 			return {
 				imgUrl: props.imgUrl, title: props.title, text: props.text
 			}

@@ -1,32 +1,30 @@
 <template>
-    <button>
-        <reorder-comp v-if="img==='reorder'"/>
-        <bin-comp v-else/>
+    <button :onclick="click" :style="styles">
+       <svg-component :img="img"/>
     </button>
 </template>
 
 <script>
-    import BinComp from './binComp.vue'
-    import ReorderComp from './reorderComp.vue'
+	import SvgComponent from './svgComponent.vue'
 	export default {
 		props: ['img'],
-      components:{BinComp,ReorderComp},
-		setup(props) {
-			return {
-				img: props.img
+		components: {SvgComponent},
+		setup(props, context) {
+			const styles = {
+				position: props.img === 'gear' ? 'absolute' : 'relative',
+				top: (props.img === 'gear' || props.img === 'close') && '0',
+				left: (props.img === 'gear' || props.img === 'close') && '165px',
+				border: 'none', outline: 'none'
 			}
+			const click = () => {
+				props.img === 'gear' && context.emit('clickGear')
+				props.img === 'close' && context.emit('clickClose')
+			}
+			return {img: props.img, styles, click}
 		}
 	}
 </script>
 
 <style scoped>
-    button {
-        width: 30px;
-        height: 30px;
-    }
 
-    img {
-        width: 100%;
-        height: 100%;
-    }
 </style>

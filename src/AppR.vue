@@ -1,5 +1,6 @@
 <template>
-    <weather-widget/>
+    <weather-widget v-if="isLoaded"/>
+    <h2 v-else class="cc">Loadding....</h2>
 </template>
 <script lang="ts">
 	import {useStore} from "vuex"
@@ -10,9 +11,12 @@
 		components: {WeatherWidget},
 		setup() {
 			const store = useStore()
+			const isLoaded = computed(() => store.getters.getLoaded)
 			store.dispatch('getData')
+			return {isLoaded}
 		},
 	}
 </script>
 <style scoped>
+
 </style>

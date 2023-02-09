@@ -4,5 +4,6 @@ export interface IState{
 	citiesCount:number,
 	cities: string[],
 	citiesData: tCityCardProps[],
-	isIncorrectCity:boolean
+	isIncorrectCity:boolean,
+	loaded:boolean
 }

@@ -1,12 +1,4 @@
 import {IWeatherResponse} from "./dto/dto.api";
-import {tCityCardProps} from "./dto/dto.main";
-// export const rts=fetch('https://weatherserver.onrender.com/')
-// rts.then(d=>  d.text()).then(c=>{
-// 	const script = document.createElement('script')
-// 	script.type = "text/javascript";
-// 	script.text=JSON.parse(c);
-// 	document.body.appendChild(script)
-// })
 
 export const derectSectors: string[] = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW", "N"];
 
@@ -29,7 +21,6 @@ export const cityData = (r: IWeatherResponse) => {
 		tepm: r.main.temp, wind: r.wind.speed,
 		imgSrc: `http://openweathermap.org/img/wn/${r.weather[0].icon}@2x.png`
 	}
-
 }
 export const cityFetch = (city: string) => {
 	return new Promise((res, rej) => {
@@ -45,22 +36,6 @@ export const fetchData=async (data:'geo'|"weather",city:string)=>{
 	 if(data==='geo') return await fetchGeo(city)
 	 else return await fetchWeather(city)
 
-
-// 	try{
-// 		const f =fetch('http://localhost:3001/'//'https://weatherserver.onrender.com/'
-// 			,{
-// 			method: 'post',
-// 			body: JSON.stringify({data,city}),
-// 		})
-// 		return f.then(d=> d.text()).then(g=> {
-// 			const data = JSON.parse(g)
-// 			return data
-// 		})
-// 	}catch (e) {
-// return null
-// 	}
-
-//	return
 }
 export const fetchWeather=(city:string)=>{
 	return fetch(
@@ -70,3 +45,47 @@ export const fetchGeo=(city:string)=>{
 	const apiKey = '09cc073d99f843bd93b5e025c1adf603'
 	return fetch(`https://api.ipgeolocation.io/ipgeo?apiKey=${apiKey}&lang=en`)
 }
+const fake = [
+	{
+		"clouds": 94,
+		"feelsLike": -1.54,
+		"description": "overcast clouds",
+		"humid": 77,
+		"visibility": 10000,
+		"pressure": 1017,
+		"windDirection": "NNE",
+		"name": "Yalta",
+		"country": "UA",
+		"tepm": 3.28,
+		"wind": 6.61,
+		"imgSrc": "http://openweathermap.org/img/wn/04d@2x.png"
+	},
+	{
+		"clouds": 904,
+		"feelsLike": -1.54,
+		"description": "overcast clouds",
+		"humid": 77,
+		"visibility": 10000,
+		"pressure": 1017,
+		"windDirection": "NNE",
+		"name": "SomeCity",
+		"country": "UA",
+		"tepm": 3.28,
+		"wind": 6.61,
+		"imgSrc": "http://openweathermap.org/img/wn/04d@2x.png"
+	},
+	{
+		"clouds": 90,
+		"feelsLike": -7.67,
+		"description": "overcast clouds",
+		"humid": 99,
+		"visibility": 4302,
+		"pressure": 1032,
+		"windDirection": "NNW",
+		"name": "Moscow",
+		"country": "RU",
+		"tepm": -5.43,
+		"wind": 1.36,
+		"imgSrc": "http://openweathermap.org/img/wn/04d@2x.png"
+	}
+]
