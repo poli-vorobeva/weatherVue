@@ -1,7 +1,9 @@
 import {createApp} from 'vue'
 import App from './AppR.vue'
 import store from './store'
-
+// const app = createApp(App)
+// app.use(store);
+// app.mount('#app');
 function weather(parent: HTMLElement) {
 	const app = createApp(App)
 	app.use(store);

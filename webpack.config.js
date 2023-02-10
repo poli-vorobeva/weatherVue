@@ -48,10 +48,18 @@ const config = {
                     }
                 ]
             },
+            // {
+            //     test: /\.scss$/,
+            //     use: [
+            //         'vue-style-loader',
+            //         'css-loader',
+            //         'sass-loader'
+            //     ]
+            // },
             {
                 test: /\.css$/i,
-                use: ['vue-style-loader',
-                    'css-loader',],
+                use: ['style-loader',
+                    'css-loader'],
             },
             {
                 test: /\.(png|jpe?g|gif|svg)$/,
@@ -68,23 +76,23 @@ const config = {
                 test: /\.vue$/,
                 use: 'vue-loader'
             },
-            // {
-            //     test: /\.sass$/i,
-            //     use: ['vue-style-loader','css-loader',{
-            //         loader:'sass-loader',
-            //         options: {
-            //             indentedSyntax:true,
-            //             sassOptions:{
-            //                 indentedSyntax:true
-            //             },
-            //             additionalData:`@import "./src/main.scss"`
-            //         }
-            //     }],
-            // },
+            {
+                test: /\.s[ac]ss$/i,
+                use: ['vue-style-loader','css-loader',{
+                    loader:'sass-loader',
+                    options: {
+                        //indentedSyntax:true,
+                        sassOptions:{
+                          //  indentedSyntax:true
+                        },
+                      //  additionalData:`@import "./src/main.scss"`
+                    }
+                }],
+            },
         ],
     },
     resolve: {
-        extensions: ['.tsx', '.ts', '.jsx', '.js', '...'],
+        extensions: ['.tsx', '.ts', '.jsx', '.js', '.vue'],
         alias: {
             'vue': path.join(__dirname, 'node_modules/vue/dist/vue.esm-bundler.js')
         }

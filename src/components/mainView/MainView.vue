@@ -1,5 +1,5 @@
 <template>
-    <div :style="{position:'relative'}">
+    <div class="divm" :style="{position:'relative'}">
         <AppButton @clickGear="clickGear" img="gear"/>
         <city-card @click="cl" :key="cities" :city="city" v-for="city of cities"/>
     </div>
@@ -23,6 +23,8 @@
 	}
 </script>
 
-<style scoped>
-
+<style scoped lang="css">
+.divm {
+    border: 10px solid rebeccapurple;
+}
 </style>

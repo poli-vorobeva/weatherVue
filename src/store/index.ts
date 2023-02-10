@@ -67,12 +67,8 @@ export default createStore<IState>({
 			try {
 				const data = fetch(
 					`https://api.openweathermap.org/data/2.5/weather?q=${props}&appid=a1d7b55bf627b6db7643916254c70535&units=metric`)
-				data.then(async d => {
-					const res = await d.json()
-					context.commit('onAddCity', res)
-				})
-			} catch (e) {
-			}
+				data.then(d =>  d.json()).then(res=>context.commit('onAddCity', res))
+			} catch (e) {}
 		},
 		getGeoLocation(context) {
 			const apiKey = '09cc073d99f843bd93b5e025c1adf603'
@@ -81,16 +77,15 @@ export default createStore<IState>({
 					'Content-Type': "application/json"
 				}
 			})
-			geo.then(async g => {
-				const geoRes = await g.json()
+			geo.then(g => g.json()).then((geoRes)=>{
 				localStorage.setItem('weatherCities', JSON.stringify([geoRes.city]))
 				context.state.cities = [geoRes.city]
-				await context.dispatch('getCitiesData')
+				context.dispatch('getCitiesData')
 			})
 		},
 
 		getCitiesData(context) {
-			const allCitiesData = Promise.all(context.state.cities.map(async (city: string) => {
+			const allCitiesData = Promise.all(context.state.cities.map((city: string) => {
 				try {
 					const dd = fetchData('weather', city)
 					return dd.then(d => d).then(e => e.json()).then(s => s)
